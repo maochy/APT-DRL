@@ -17,11 +17,14 @@ def eval_model(name,model_name, index,record_num):
     env = CTEnv(name=name, t_way=2)
     device = th.device('cuda' if th.cuda.is_available() else 'cpu')
     print(device)
+    deterministic = False
     if model_name == "PPO":
         model = CTMaskablePPO.load(f"model/{model_name}/{name}/{model_name}_{index}.zip", env=env, device=device)
     elif model_name == "DQN":
+        deterministic=True
         model = CTMaskableDQN.load(f"model/{model_name}/{name}/{model_name}_{index}.zip", env=env, device=device)
     elif model_name == "DDQN":
+        deterministic = True
         model = CTMaskableDDQN.load(f"model/{model_name}/{name}/{model_name}_{index}.zip", env=env, device=device)
 
     stable_baselines3.common.utils.obs_as_tensor.__code__ = obs_as_tensor.__code__
@@ -34,7 +37,7 @@ def eval_model(name,model_name, index,record_num):
     obs,_ = env.reset()
     while episode < record_num:
         action_masks = env.action_masks()
-        action, obs = model.predict(obs, action_masks=action_masks,deterministic=False)
+        action, obs = model.predict(obs, action_masks=action_masks,deterministic=deterministic)
         obs, reward, done,truncate, info = env.step(action)
         if done:
             gen_time = time.perf_counter_ns() - start_time

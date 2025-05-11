@@ -27,6 +27,7 @@ def get_args():
     parser.add_argument('--train-freq', type=int, default=16)  # DQN and DDQN
     parser.add_argument('--batch-size', type=int, default=32)
     parser.add_argument('--gamma', type=float, default=0.65)
+    parser.add_argument('--buffer-size', type=int, default=2e4)
     parser.add_argument('--logdir', type=str, default='log')
     parser.add_argument('--training-num', type=int, default=16)
     parser.add_argument('--epoch', type=int, default=16)
@@ -70,6 +71,7 @@ def run(args):
             train_freq=args.train_freq//args.training_num,
             gradient_steps=args.epoch,
             device=device,
+            buffer_size=args.buffer_size,
             batch_size=args.batch_size,
             verbose=1,
             policy_kwargs=policy_kwargs,
@@ -85,6 +87,7 @@ def run(args):
             train_freq=args.train_freq//args.training_num,
             gradient_steps=args.epoch,
             device=device,
+            buffer_size=args.buffer_size,
             batch_size=args.batch_size,
             verbose=1,
             policy_kwargs=policy_kwargs,

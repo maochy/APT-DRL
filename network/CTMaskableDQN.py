@@ -213,9 +213,10 @@ class CTMaskableDQN(OffPolicyAlgorithm):
                     n_batch = observation[next(iter(observation.keys()))].shape[0]
                 else:
                     n_batch = observation.shape[0]
-                action = np.array([self.action_space.sample() for _ in range(n_batch)])
+                action = np.array([self.action_space.sample(mask=np.array(action_masks[i]).astype(np.int8)) for i in
+                                       range(n_batch)])
             else:
-                action = np.array(self.action_space.sample())
+                action = np.array(self.action_space.sample(mask=np.array(action_masks[0]).astype(np.int8)))
         else:
             action, state = self.policy.predict(observation, state, episode_start, deterministic,action_masks)
         return action, state
